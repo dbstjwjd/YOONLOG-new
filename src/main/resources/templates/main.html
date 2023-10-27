@@ -1,0 +1,71 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <div style="margin:0 auto; font-size:14pt;">
+        <p class="fw-bold fs-3 border-bottom pb-2" th:text="|전체 게시물 (${paging.totalElements})|"></p>
+        <table class="table text-center">
+            <thead class="table" style="background:pink;">
+            <tr>
+                <th>번호</th>
+                <th>카테고리</th>
+                <th style="width=50%">제목</th>
+                <th>작성자</th>
+                <th>작성일자</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="post, loop:${paging}">
+                <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+                <td th:text="${post.category}"></td>
+                <td class="text-start">
+                    <a style="text-decoration:underline" th:href="@{|/post/detail/${post.id}|}"
+                       th:text="${post.subject}"></a>
+                    <span th:text="${#lists.size(post.commentList)}"
+                          style="color:lightcoral; font-size:11pt; margin-left:6px;"
+                          th:if="${#lists.size(post.commentList) > 0}"
+                    ></span>
+                </td>
+                <td><span th:if="${post.author != null}" th:text="${post.author.nickname}"></span></td>
+                <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- 페이징처리 시작 -->
+        <div th:if="${!paging.isEmpty()}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{?page=0}">
+                        <span>&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{|?page=${paging.number-1}|}">
+                        <span><</span>
+                    </a>
+                </li>
+                <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                    th:if="${page >= paging.number-4 and page <= paging.number+4}"
+                    th:classappend="${page == paging.number} ? 'active'"
+                    class="page-item">
+                    <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                </li>
+                <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                    <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+                        <span>></span>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                    <a class="page-link" th:href="@{|?page=${paging.totalPages-1}|}">
+                        <span>&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- 페이징처리 끝 -->
+        <form th:action="@{/post/create}" method="get">
+            <input type="submit" value="글쓰기" class="btn btn-outline-light mt-2" style="background:lightcoral">
+        </form>
+    </div>
+</div>
+</html>
