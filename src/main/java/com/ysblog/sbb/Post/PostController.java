@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,13 +52,17 @@ public class PostController {
     }
 
     @GetMapping("/main")
-    public String list(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Post> paging = this.postService.getList(page);
+    public String list(Model model, Principal principal, @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "kw", defaultValue = "") String kw,
+                       @RequestParam(value = "category", defaultValue = "") String category) {
+        Page<Post> paging = this.postService.getList(page, kw, category);
         if (principal != null) {
             SiteUser user = this.userService.getUser(principal.getName());
             model.addAttribute("user", user);
         }
         model.addAttribute("paging", paging);
+        model.addAttribute("kw", kw);
+        model.addAttribute("category", category);
         return "main";
     }
 
@@ -110,5 +115,14 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
         this.postService.deletePost(post);
         return "redirect:/";
+    }
+
+    @GetMapping("/like/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String vote(@PathVariable("id") Integer id, Principal principal) {
+        SiteUser user = this.userService.getUser(principal.getName());
+        Post post = this.postService.getPost(id);
+        this.postService.likePost(post, user);
+        return String.format("redirect:/post/detail/%s", id);
     }
 }

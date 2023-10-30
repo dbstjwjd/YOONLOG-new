@@ -54,4 +54,9 @@ public class CommentService {
     public void deleteComment(Comment comment) {
         this.commentRepository.delete(comment);
     }
+
+    public void likeComment(Comment comment, SiteUser liker) {
+        comment.getLiker().add(liker);
+        this.commentRepository.save(comment);
+    }
 }

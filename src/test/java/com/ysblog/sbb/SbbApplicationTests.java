@@ -26,10 +26,11 @@ class SbbApplicationTests {
 
 	@Test
 	void contextLoads() {
-		Post post = this.postService.getPost(18);
-		SiteUser user = this.userService.getUser("bbb");
-		for (int i = 1; i <= 100; i++) {
-			this.commentService.createComment(String.format("답변 페이징 테스트 %d", i), post, user);
+		SiteUser user = this.userService.getUser("aaa");
+
+		Post post = new Post();
+		for (int i = 1; i <= 30; i++) {
+			this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "잡담", user);
 		}
 	}
 

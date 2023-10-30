@@ -72,4 +72,13 @@ public class CommentController {
         this.commentService.deleteComment(comment);
         return String.format("redirect:/post/detail/%s", comment.getPost().getId());
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/like/{id}")
+    public String like(@PathVariable("id") Integer id, Principal principal) {
+        Comment comment = this.commentService.getComment(id);
+        SiteUser user = this.userService.getUser(principal.getName());
+        this.commentService.likeComment(comment, user);
+        return String.format("redirect:/post/detail/%s", comment.getPost().getId());
+    }
 }

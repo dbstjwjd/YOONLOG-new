@@ -41,3 +41,13 @@ a:hover {
     background:lightcoral;
     color:white;
 }
+
+#btn_like {
+    color:lightcoral;
+    border:1px solid lightcoral;
+}
+
+#btn_like:hover {
+    background:lightcoral;
+    color:white;
+}

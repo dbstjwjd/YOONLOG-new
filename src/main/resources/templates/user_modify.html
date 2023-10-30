@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <div style="width:50%; margin:0 auto; font-size:15pt; margin-top:80px;">
+    <div style="width:50%; margin:0 auto; font-size:15pt;">
         <h3 class="border-bottom pb-2">정보 수정</h3>
         <form th:action="@{|/user/modify/${user.username}|}" method="post" th:object="${userModifyForm}">
             <div th:replace="~{form_errors :: formErrorsFragment}"></div>

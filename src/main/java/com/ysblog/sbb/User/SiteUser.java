@@ -32,4 +32,5 @@ public class SiteUser {
     private LocalDateTime joinDate;
 
     private String address;
+
 }
