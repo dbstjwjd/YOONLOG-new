@@ -24,4 +24,6 @@ public class UserModifyForm {
     @Email
     @NotEmpty(message = "이메일을 입력해주세요.")
     private String email;
+
+    private String imageAddress;
 }

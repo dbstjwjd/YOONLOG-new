@@ -17,4 +17,6 @@ public class PostForm {
 
     @NotBlank(message = "카테고리를 선택해주세요.")
     private String category;
+
+    private String hashtag;
 }

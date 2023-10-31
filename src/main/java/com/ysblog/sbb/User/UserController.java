@@ -1,5 +1,6 @@
 package com.ysblog.sbb.User;
 
+import com.ysblog.sbb.Post.Post;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -7,13 +8,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -58,9 +57,11 @@ public class UserController {
     }
 
     @GetMapping("/info/{username}")
-    public String info(Model model, Principal principal, @PathVariable("username") String username) {
+    public String info(Model model, Principal principal, @PathVariable("username") String username,
+                       @RequestParam(value = "my", defaultValue = "post") String value) {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         model.addAttribute("user", siteUser);
+        model.addAttribute("my", value);
         return "user_info";
     }
 
@@ -73,17 +74,19 @@ public class UserController {
         userModifyForm.setBirthDate(user.getBirthDate());
         userModifyForm.setAddress(user.getAddress());
         userModifyForm.setEmail(user.getEmail());
+        userModifyForm.setImageAddress(user.getImageAddress());
         return "user_modify";
     }
 
     @PostMapping("/modify/{username}")
     @PreAuthorize("isAuthenticated()")
-    public String modify(Principal principal, @PathVariable("username") String username, @Valid UserModifyForm userModifyForm, BindingResult bindingResult) {
+    public String modify(Principal principal, @PathVariable("username") String username, @Valid UserModifyForm userModifyForm, BindingResult bindingResult, Model model) {
         SiteUser user = this.userService.getUser(principal.getName());
+        model.addAttribute("user", user);
         if (bindingResult.hasErrors()) {
             return "user_modify";
         }
-        this.userService.modifyUser(user, userModifyForm.getNickname(), userModifyForm.getBirthDate(), userModifyForm.getAddress(), userModifyForm.getEmail());
+        this.userService.modifyUser(user, userModifyForm.getNickname(), userModifyForm.getBirthDate(), userModifyForm.getAddress(), userModifyForm.getEmail(), userModifyForm.getImageAddress());
         return String.format("redirect:/user/info/%s", username);
     }
 }

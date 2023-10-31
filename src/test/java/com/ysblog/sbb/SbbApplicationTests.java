@@ -30,7 +30,7 @@ class SbbApplicationTests {
 
 		Post post = new Post();
 		for (int i = 1; i <= 30; i++) {
-			this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "잡담", user);
+			this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "개발 일지", user);
 		}
 	}
 

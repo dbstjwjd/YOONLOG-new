@@ -1,12 +1,14 @@
 package com.ysblog.sbb.User;
 
 import com.ysblog.sbb.DataNotFoundException;
+import com.ysblog.sbb.Post.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,11 +40,12 @@ public class UserService {
         }
     }
 
-    public void modifyUser(SiteUser user, String nickname, LocalDate birthDate, String address, String email) {
+    public void modifyUser(SiteUser user, String nickname, LocalDate birthDate, String address, String email, String imageAddress) {
         user.setNickname(nickname);
         user.setBirthDate(birthDate);
         user.setAddress(address);
         user.setEmail(email);
+        user.setImageAddress(imageAddress);
         this.userRepository.save(user);
     }
 }

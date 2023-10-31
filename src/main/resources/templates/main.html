@@ -16,12 +16,13 @@
                 </select>
             </div>
         </div>
-        <table class="table text-center">
+        <table class="table table-hover text-center">
             <thead class="table" style="background:pink;">
             <tr>
                 <th>번호</th>
                 <th>카테고리</th>
-                <th style="width=50%">제목</th>
+                <th style="width:55%;">제목</th>
+                <th>조회수</th>
                 <th>작성자</th>
                 <th>작성일자</th>
             </tr>
@@ -34,10 +35,10 @@
                     <a style="text-decoration:underline" th:href="@{|/post/detail/${post.id}|}"
                        th:text="${post.subject}"></a>
                     <span th:text="${#lists.size(post.commentList)}"
-                          style="color:lightcoral; font-size:11pt; margin-left:6px;"
-                          th:if="${#lists.size(post.commentList) > 0}"
+                          th:if="${#lists.size(post.commentList) > 0}" class="text-danger small ms-2"
                     ></span>
                 </td>
+                <td th:text="${post.view}"></td>
                 <td><span th:if="${post.author != null}" th:text="${post.author.nickname}"></span></td>
                 <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd')}"></td>
             </tr>

@@ -21,8 +21,33 @@
                 <label for="content" class="form-label fs-5">내용</label>
                 <textarea class="form-control" th:field="*{content}" rows="10" style="font-size:13pt;"></textarea>
             </div>
+            <div class="mb-3">
+                <label for="hashtag" class="form-label fs-5">태그</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" th:field="*{hashtag}" style="font-size:13pt;" id="tagName">
+                    <div id="result"></div>
+                    <div onclick="HashtagToIcon()" class="btn btn-outline-light" style="background:lightcoral; border:lightcoral;">등록
+                    </div>
+                </div>
+            </div>
+            <script>
+                function HashtagToIcon() {
+                    const tagName = document.getElementById("tagName").value;
+                    const result = document.getElementById("result");
+                    const hashtags = tagName.match(/#(\w+)/g);
+
+                    if (hashtags) {
+                        hashtags.forEach(hashtag => {
+                            const tag = hashtag.substring(1); // 해시태그 기호(#) 제외
+                            const iconHTML = `<i class="fas fa-hashtag"></i><span>${tag}</span>`;
+                            tagName = tagName.replace(hashtag, iconHTML);
+                        });
+                    }
+                    result.innerHTML = tagName;
+                }
+            </script>
             <div class="d-flex justify-content-end">
-            <input type="submit" value="저장" class="btn btn-outline-light" style="background:lightcoral">
+                <input type="submit" value="저장" class="btn btn-outline-light" style="background:lightcoral">
             </div>
         </form>
     </div>

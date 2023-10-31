@@ -20,6 +20,10 @@
                 <label for="email" class="form-label">이메일</label>
                 <input type="email" class="form-control" th:field="*{email}">
             </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">프로필 이미지</label>
+                <input class="form-control" type="text" id="image" th:field="*{imageAddress}" placeholder="이미지 주소를 입력하세요.">
+            </div>
             <input type="submit" value="저장" class="btn btn-lg btn-outline-light" style="background:lightcoral">
         </form>
     </div>

@@ -1,11 +1,14 @@
 package com.ysblog.sbb.User;
 
+import com.ysblog.sbb.Comment.Comment;
+import com.ysblog.sbb.Post.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +36,11 @@ public class SiteUser {
 
     private String address;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Post> postList;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
+
+    private String imageAddress;
 }
