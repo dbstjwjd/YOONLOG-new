@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,11 +59,9 @@ public class UserController {
     }
 
     @GetMapping("/info/{username}")
-    public String info(Model model, Principal principal, @PathVariable("username") String username,
-                       @RequestParam(value = "my", defaultValue = "post") String value) {
+    public String info(Model model, Principal principal, @PathVariable("username") String username) {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         model.addAttribute("user", siteUser);
-        model.addAttribute("my", value);
         return "user_info";
     }
 

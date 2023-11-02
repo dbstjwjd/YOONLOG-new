@@ -4,6 +4,7 @@ import com.ysblog.sbb.DataNotFoundException;
 import com.ysblog.sbb.Post.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -47,5 +48,12 @@ public class UserService {
         user.setEmail(email);
         user.setImageAddress(imageAddress);
         this.userRepository.save(user);
+    }
+
+    public void socialSignupUser(OidcUser user) {
+        SiteUser siteUser = new SiteUser();
+        siteUser.setUsername(user.getName());
+        siteUser.setEmail(user.getEmail());
+        this.userRepository.save(siteUser);
     }
 }
