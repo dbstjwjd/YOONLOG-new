@@ -102,10 +102,9 @@
                                  data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
                                 <div th:each="comment : ${user.commentList}" class="card mb-2">
                                     <a th:id="|userComment_${comment.id}|"></a>
-                                    <div>
-                                        <p class="card-header fw-bold" th:text="${comment.post.subject}" style="background:pink"></p>
-                                        <p class="text-center" style="padding-top:15px;"
-                                           th:text="${comment.post.content}"></p>
+                                    <div class="card-text p-1">
+                                        <a class=" fw-bold text-center" th:text="|<${comment.post.category}> ${comment.post.subject}|"
+                                           th:href="@{|/post/detail/${comment.post.id}|}"></a>
                                     </div>
                                 </div>
                             </div>

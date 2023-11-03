@@ -5,6 +5,9 @@ import com.ysblog.sbb.DataNotFoundException;
 import com.ysblog.sbb.User.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ public class PostService {
     private Specification<Post> search(String kw, String category) {
         return new Specification<>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<Post> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query.distinct(true);  // 중복을 제거
@@ -34,23 +38,42 @@ public class PostService {
                 Join<Comment, SiteUser> u2 = a.join("author", JoinType.LEFT);
                 return cb.and(
                         cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
-                        cb.like(q.get("content"), "%" + kw + "%"),      // 내용
-                        cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
-                        cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
-                        cb.like(u2.get("username"), "%" + kw + "%")),    // 답변 작성자
+                                cb.like(q.get("content"), "%" + kw + "%"),      // 내용
+                                cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
+                                cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
+                                cb.like(u2.get("username"), "%" + kw + "%")),    // 답변 작성자
                         cb.like(q.get("category"), "%" + category + "%") // 카테고리
                 );
             }
         };
     }
 
-    public void createPost(String subject, String content, String category, SiteUser author) {
+    public void createPost(String subject, String content, String category, SiteUser author, String tag) {
         Post post = new Post();
         post.setSubject(subject);
         post.setContent(content);
         post.setCategory(category);
         post.setAuthor(author);
         post.setCreateDate(LocalDateTime.now());
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONArray jsonArray = (JSONArray) parser.parse(tag);
+
+            List<String> tagList = new ArrayList<>();
+
+            for (Object item : jsonArray) {
+                JSONObject jsonObject = (JSONObject) item;
+                String value = (String) jsonObject.get("value");
+
+                if (value != null) {
+                    tagList.add(value);
+                }
+            }
+            post.setTag(tagList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.postRepository.save(post);
     }
 

@@ -13,7 +13,7 @@
         </div>
         <div class="d-flex justify-content-end" style="font-weight:bold; font-size:15pt;"
              sec:authorize="isAuthenticated()">
-            <div class="d-flex" th:if="${post.author.username == #authentication.getPrincipal().getUsername}">
+            <div class="d-flex" th:if="${post.author.username == user.username}">
                 <a th:href="@{|/post/modify/${post.id}|}" class="mx-2">수정</a>
                 <div>|</div>
                 <a href="javascript:void(0)" th:data-uri="@{|/post/delete/${post.id}|}" class="delete ms-2">삭제</a>
@@ -31,7 +31,8 @@
                     <div class="badge p-2 fs-6 fw-light text-dark text-start">
                         <div class="border-top border-danger border-opacity-25 pt-3">
                             <div class="mb-2 d-flex">
-                                <a href="javascript:void(0)" th:data-uri="@{|/post/like/${post.id}|}" class="btn_like me-4">
+                                <a href="javascript:void(0)" th:data-uri="@{|/post/like/${post.id}|}"
+                                   class="btn_like me-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                          class="bi bi-chat-left-heart" viewBox="0 0 16 16">
                                         <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12ZM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2Z"/>
@@ -40,7 +41,8 @@
                                     <span style="margin-left:3px;" th:text="|+ ${#lists.size(post.liker)}|"></span>
                                 </a>
                                 <div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-eye-fill" viewBox="0 0 16 16">
                                         <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                                         <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
                                     </svg>
@@ -82,11 +84,12 @@
                         </div>
                         <!-- 댓글 수정, 삭제 버튼 시작 -->
                         <div class="d-flex" sec:authorize="isAuthenticated()"
-                             th:if="${comment.author.username == #authentication.getPrincipal().getUsername()}">
+                             th:if="${comment.author.username == user.username}">
                             <a href="javascript:void(0);" class="btn_like btn btn-sm me-1"
                                th:data-uri="@{|/comment/like/${comment.id}|}" id="btn_like">
                                 추천
-                                <span id="like_badge" class="badge rounded-pill" style="background:lightcoral" th:text="${#lists.size(comment.liker)}"></span>
+                                <span id="like_badge" class="badge rounded-pill" style="background:lightcoral"
+                                      th:text="${#lists.size(comment.liker)}"></span>
                             </a>
                             <a th:href="@{|/comment/modify/${comment.id}|}"
                                class="comment_button btn btn-sm me-1" th:text="수정"></a>
@@ -134,6 +137,11 @@
                 </div>
             </form>
             <!-- 댓글 입력 폼 끝 -->
+        </div>
+    </div>
+    <div class="d-flex mt-2">
+        <div th:each="tag : ${post.tag}">
+            <div th:text="${tag}" class="me-1"></div>
         </div>
     </div>
 </div>

@@ -2,7 +2,6 @@ package com.ysblog.sbb.Post;
 
 import com.ysblog.sbb.Comment.Comment;
 import com.ysblog.sbb.Comment.CommentService;
-import com.ysblog.sbb.CommonUtil;
 import com.ysblog.sbb.User.SiteUser;
 import com.ysblog.sbb.User.UserService;
 import jakarta.validation.Valid;
@@ -10,15 +9,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -41,13 +45,14 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String create(@Valid PostForm postForm, BindingResult bindingResult, Principal principal, Model model) {
+    public String create(@Valid PostForm postForm, BindingResult bindingResult, Principal principal, Model model,
+                         @RequestParam(value = "inputTag", defaultValue = "") String tag) {
         SiteUser user = this.userService.getUser(principal.getName());
         model.addAttribute("user", user);
         if (bindingResult.hasErrors()) {
             return "post_form";
         }
-        this.postService.createPost(postForm.getSubject(), postForm.getContent(), postForm.getCategory(), user);
+        this.postService.createPost(postForm.getSubject(), postForm.getContent(), postForm.getCategory(), user, tag);
         return "redirect:/";
     }
 

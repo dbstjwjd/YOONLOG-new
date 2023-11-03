@@ -15,23 +15,29 @@ import java.time.LocalDateTime;
 
 @SpringBootTest
 class SbbApplicationTests {
-	@Autowired
-	private CommentService commentService;
+    @Autowired
+    private CommentService commentService;
 
-	@Autowired
-	private PostService postService;
+    @Autowired
+    private PostService postService;
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@Test
-	void contextLoads() {
-		SiteUser user = this.userService.getUser("aaa");
+    @Test
+    void contextLoads() {
 
-		Post post = new Post();
-		for (int i = 1; i <= 30; i++) {
-			this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "개발 일지", user);
-		}
-	}
+        SiteUser user1 = this.userService.getUser("aaa");
+        SiteUser user2 = this.userService.getUser("bbb");
+        SiteUser user3 = this.userService.getUser("ccc");
 
+
+        for (int i = 1; i <= 30; i++) {
+            this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "일기장", user1, "");
+            this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "개발 일지", user2, "");
+            this.postService.createPost(String.format("테스트용 게시물 %d", i), "내용없음", "잡담", user3, "");
+        }
+    }
 }
+
+

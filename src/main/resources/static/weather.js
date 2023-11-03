@@ -12,12 +12,11 @@ fetch(apiUrl)
         const weatherDescription = data.weather[0].description;
         const temperatureKelvin = data.main.temp;
 
-        const temperatureCelsius = (temperatureKelvin - 273.15).toFixed(2);
+        const temperatureCelsius = (temperatureKelvin - 273.15).toFixed(1);
 
         temperatureElement.textContent = `${temperatureCelsius}°C`;
         weatherDescriptionElement.textContent = `${weatherDescription}`;
 
-        // 날씨 아이콘을 표시합니다.
         const iconCode = data.weather[0].icon;
         const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
         const iconImage = document.createElement("img");

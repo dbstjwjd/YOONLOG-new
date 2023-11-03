@@ -19,37 +19,46 @@
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label fs-5">내용</label>
-                <textarea class="form-control" th:field="*{content}" rows="10" style="font-size:13pt;"></textarea>
+                <div id="editor"></div>
             </div>
             <div class="mb-3">
-                <label for="hashtag" class="form-label fs-5">태그</label>
+                <label for="tag" class="form-label fs-5">태그</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" th:field="*{hashtag}" style="font-size:13pt;" id="tagName">
-                    <div id="result"></div>
-                    <div onclick="HashtagToIcon()" class="btn btn-outline-light" style="background:lightcoral; border:lightcoral;">등록
+                    <input type="text" class="form-control" style="font-size:13pt;" id="inputTag" placeholder="#태그이름" name="inputTag">
+                    <div class="btn btn-outline-light" style="background:lightcoral; border:lightcoral;">등록
                     </div>
                 </div>
             </div>
-            <script>
-                function HashtagToIcon() {
-                    const tagName = document.getElementById("tagName").value;
-                    const result = document.getElementById("result");
-                    const hashtags = tagName.match(/#(\w+)/g);
-
-                    if (hashtags) {
-                        hashtags.forEach(hashtag => {
-                            const tag = hashtag.substring(1); // 해시태그 기호(#) 제외
-                            const iconHTML = `<i class="fas fa-hashtag"></i><span>${tag}</span>`;
-                            tagName = tagName.replace(hashtag, iconHTML);
-                        });
-                    }
-                    result.innerHTML = tagName;
-                }
-            </script>
             <div class="d-flex justify-content-end">
-                <input type="submit" value="저장" class="btn btn-outline-light" style="background:lightcoral">
+                <input onclick="saveEditorContent()" type="submit" value="저장" class="btn btn-outline-light" style="background:lightcoral">
             </div>
+            <input type="hidden" th:field="*{content}" id="content">
         </form>
     </div>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script src="https://unpkg.com/@yaireo/tagify"></script>
+    <script>
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'), // 에디터를 적용할 요소 (컨테이너)
+            height: '300px',                        // 에디터 영역의 높이 값 (OOOpx || auto)
+            initialEditType: 'wysiwyg',            // 최초로 보여줄 에디터 타입 (markdown || wysiwyg)
+            initialValue: '',     // 내용의 초기 값으로, 반드시 마크다운 문자열 형태여야 함
+            previewStyle: 'vertical'                // 마크다운 프리뷰 스타일 (tab || vertical)
+        });
+
+        function saveEditorContent() {
+            const content = editor.getMarkdown(); // 에디터의 내용을 가져옵니다.
+            const contentField = document.getElementById('content'); // 폼 필드에 해당하는 엘리먼트
+
+            // 에디터의 내용을 폼 필드에 할당합니다.
+            contentField.value = content;
+        }
+
+        const input = document.querySelector('#inputTag');
+            let tagify = new Tagify(input); // initialize Tagify
+            tagify.on('add', function() {
+              console.log(tagify.value);
+            })
+    </script>
 </div>
 </html>

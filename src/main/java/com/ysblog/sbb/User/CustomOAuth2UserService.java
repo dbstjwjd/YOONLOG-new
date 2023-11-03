@@ -24,20 +24,32 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = getUserEmail(oAuth2User, userRequest.getClientRegistration().getRegistrationId());
         String name = getUserName(oAuth2User, userRequest.getClientRegistration().getRegistrationId());
         String username = getUserId(oAuth2User, userRequest.getClientRegistration().getRegistrationId());
+        String imgUri = getUserImgUri(oAuth2User, userRequest.getClientRegistration().getRegistrationId());
 
         Optional<SiteUser> userOptional = this.userRepository.findByEmail(email);
 
         if (userOptional.isPresent()) {
             SiteUser user = userOptional.get();
             user.setNickname(name);
+            user.setImageAddress(imgUri);
             this.userRepository.save(user);
         } else {
             SiteUser newUser = new SiteUser();
             newUser.setEmail(email);
             newUser.setUsername(username);
             newUser.setNickname(name);
+            newUser.setImageAddress(imgUri);
             newUser.setJoinDate(LocalDateTime.now());
             this.userRepository.save(newUser);
+        }
+        if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            TestOauthUser tuser = new TestOauthUser();
+            String naming = oAuth2User.getName();
+            int idx1 = naming.indexOf("=") + 1;
+            int idx2 = naming.indexOf(",");
+            String getName = naming.substring(idx1, idx2);
+            tuser.setName(getName);
+            return tuser;
         }
 
         return oAuth2User;
@@ -47,12 +59,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if ("google".equals(registrationId)) {
             return oAuth2User.getAttribute("email");
         } else if ("naver".equals(registrationId)) {
-            Map<String, Object> naverAttributes = oAuth2User.getAttribute("attributes");
+            Map<String, Object> naverAttributes = oAuth2User.getAttribute("response");
             if (naverAttributes != null) {
-                Map<String, Object> naverResponse = (Map<String, Object>) naverAttributes.get("response");
-                if (naverResponse != null) {
-                    return (String) naverResponse.get("email");
-                }
+                return (String) naverAttributes.get("email");
             }
         } else if ("kakao".equals(registrationId)) {
             Map<String, Object> kakaoAttributes = oAuth2User.getAttribute("kakao_account");
@@ -67,12 +76,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if ("google".equals(registrationId)) {
             return oAuth2User.getAttribute("name");
         } else if ("naver".equals(registrationId)) {
-            Map<String, Object> naverAttributes = oAuth2User.getAttribute("attributes");
+            Map<String, Object> naverAttributes = oAuth2User.getAttribute("response");
             if (naverAttributes != null) {
-                Map<String, Object> naverResponse = (Map<String, Object>) naverAttributes.get("response");
-                if (naverResponse != null) {
-                    return (String) naverResponse.get("name");
-                }
+                return (String) naverAttributes.get("name");
             }
         } else if ("kakao".equals(registrationId)) {
             Map<String, Object> kakaoAttributes = oAuth2User.getAttribute("properties");
@@ -87,17 +93,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if ("google".equals(registrationId)) {
             return oAuth2User.getAttribute("sub");
         } else if ("naver".equals(registrationId)) {
-            Map<String, Object> naverAttributes = oAuth2User.getAttribute("attributes");
+            Map<String, Object> naverAttributes = oAuth2User.getAttribute("response");
             if (naverAttributes != null) {
-                Map<String, Object> naverResponse = (Map<String, Object>) naverAttributes.get("response");
-                if (naverResponse != null) {
-                    return (String) naverResponse.get("id");
-                }
+                return (String) naverAttributes.get("id");
             }
         } else if ("kakao".equals(registrationId)) {
-            Map<String, Object> kakaoAttributes = oAuth2User.getAttribute("kakao_account");
+            Object kakaoId = oAuth2User.getAttribute("id");
+            if (kakaoId instanceof Long) {
+                return Long.toString((Long) kakaoId);
+            } else if (kakaoId instanceof String) {
+                return (String) kakaoId;
+            }
+        }
+        return null;
+    }
+
+    private String getUserImgUri(OAuth2User oAuth2User, String registrationId) {
+        if ("kakao".equals(registrationId)) {
+            Map<String, Object> kakaoAttributes = oAuth2User.getAttribute("properties");
             if (kakaoAttributes != null) {
-                System.out.println("id =" + (String) kakaoAttributes.get("id"));
+                return (String) kakaoAttributes.get("image");
             }
         }
         return null;

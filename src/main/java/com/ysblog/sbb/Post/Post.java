@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -42,5 +43,5 @@ public class Post {
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int view;
 
-    private String hashtag;
+    private List<String> tag;
 }
